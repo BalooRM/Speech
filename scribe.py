@@ -2,6 +2,7 @@ import speech_recognition as sr
 import numpy as np
 from os import path
 from pydub import AudioSegment
+import re
 import sys
 
 lensegment = 30 * 1000
@@ -10,11 +11,27 @@ srcend = 0
 segstart = 0
 segend = 0
 
-# convert mp3 file to wav                                                       
-sound = AudioSegment.from_mp3("transcript.mp3")
-#sound = AudioSegment.from_mp3("Recording3.mp3")
+lstext = ['mp3', 'm4a', 'wav']
+myargs = sys.argv    # read command line args
+if len(myargs) < 2:  # if there are not enough args, print usage and exit
+    print("ERROR: not enough parameters.\n")
+    sys.exit()
+
+src = myargs[1] # arg = filename
+ext = src[-3:]
+#print(ext)
+
+if not ext.lower() in lstext:
+    print("ERROR: Unrecognized audio file")
+    sys.exit()
+
+# read audio from file with extension as format
+sound = AudioSegment.from_file(src, format=ext.lower())
+
 srcend = len(sound)
 print("length =", str(srcend))
+
+#srcend = 6.25 * 60 * 1000
 
 numsegments = int(np.ceil((srcend - srcstart) / lensegment))
 print("#segments =", str(numsegments))
@@ -28,10 +45,10 @@ for i in range(0, numsegments):
     print("segment", str(i), ":", time[i])
     segment = sound[segstart:segend]
     audiofile.append("segment_" + str(i).zfill(4) + ".wav")
-    print(audiofile)
+    #print(audiofile)
     segment.export(audiofile[i], format="wav") 
     
-print("converted mp3 to wav")
+print("converted audio input to wav segments")
 
 # use the audio file as the audio source                                        
 r = sr.Recognizer()
