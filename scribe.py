@@ -5,13 +5,13 @@ from pydub import AudioSegment
 import re
 import sys
 
-lensegment = 30 * 1000
+lensegment = 15 * 1000
 srcstart = 0
 srcend = 0
 segstart = 0
 segend = 0
 
-lstext = ['mp3', 'm4a', 'wav']
+lstext = ['mp3', 'mp4', 'm4a', 'wav']
 myargs = sys.argv    # read command line args
 if len(myargs) < 2:  # if there are not enough args, print usage and exit
     print("ERROR: not enough parameters.\n")
@@ -26,6 +26,7 @@ if not ext.lower() in lstext:
     sys.exit()
 
 # read audio from file with extension as format
+print("Reading audio from file " + src + " as " + ext.lower())
 sound = AudioSegment.from_file(src, format=ext.lower())
 
 srcend = len(sound)
