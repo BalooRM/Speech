@@ -5,13 +5,14 @@ from pydub import AudioSegment
 import re
 import sys
 
+tpath = './Temp/'
 lensegment = 15 * 1000
 srcstart = 0
 srcend = 0
 segstart = 0
 segend = 0
 
-lstext = ['mp3', 'mp4', 'm4a', 'wav']
+lstext = ['mp3', 'mp4', 'm4a', 'wav', 'mkv']
 myargs = sys.argv    # read command line args
 if len(myargs) < 2:  # if there are not enough args, print usage and exit
     print("ERROR: not enough parameters.\n")
@@ -22,7 +23,7 @@ ext = src[-3:]
 #print(ext)
 
 if not ext.lower() in lstext:
-    print("ERROR: Unrecognized audio file")
+    print("ERROR: Unrecognized audio file (" + ext + ")")
     sys.exit()
 
 # read audio from file with extension as format
@@ -45,7 +46,7 @@ for i in range(0, numsegments):
     time.append(str(segstart) + "-" + str(segend))
     print("segment", str(i), ":", time[i])
     segment = sound[segstart:segend]
-    audiofile.append("segment_" + str(i).zfill(4) + ".wav")
+    audiofile.append(tpath + "segment_" + str(i).zfill(4) + ".wav")
     #print(audiofile)
     segment.export(audiofile[i], format="wav") 
     
