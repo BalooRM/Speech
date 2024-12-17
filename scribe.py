@@ -5,6 +5,11 @@ from pydub import AudioSegment
 import re
 import sys
 
+def fprint(f, s):
+    print(s)
+    f.write(s + '\n')
+    
+
 tpath = './Temp/'
 lensegment = 15 * 1000
 srcstart = 0
@@ -38,6 +43,9 @@ print("length =", str(srcend))
 numsegments = int(np.ceil((srcend - srcstart) / lensegment))
 print("#segments =", str(numsegments))
 
+print('Writing to transcript.txt...')
+f = open('transcript.txt', 'w')
+
 audiofile = []
 time = []
 for i in range(0, numsegments):
@@ -55,12 +63,12 @@ print("converted audio input to wav segments")
 # use the audio file as the audio source                                        
 r = sr.Recognizer()
 for i in range(0, numsegments):
-    print(audiofile[i], "\n[", time[i], "]", sep="")
+    fprint(f, ''.join([audiofile[i], "\n[", time[i], "]"]))
     try:
         with sr.AudioFile(audiofile[i]) as source:
             audio = r.record(source)  # read the entire audio file
-            print(r.recognize_google(audio))
+            fprint(f, r.recognize_google(audio))
     except:
-        print("Error processing segment")
+        fprint(f, "Error processing segment")
         
-        #print(e)
+f.close()
